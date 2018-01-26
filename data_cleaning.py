@@ -28,8 +28,8 @@ def create_column_1_0(df, colnamelist):
     
     return df
 
-
-#ONE HOT #ENCODNING FOR SESSIONS AFTER DROPPING TIME
+# CLEAN SESSION DATA 
+# ONE HOT #ENCODNING FOR SESSIONS AFTER DROPPING TIME
 # Drop time
 sessions_dummies = sessions.drop('secs_elapsed', 1)
 
@@ -102,5 +102,15 @@ sessions_clnd.columns = sessions_clnd.columns.str.lower().str.replace(' ', '_')
 sessions_clnd = sessions_clnd.reindex_axis(sorted(sessions_clnd.columns), axis=1)
 
 
+# CLEAN TRAIN USERS 
+# Create column if there was a destination made
+destinations = train_users_2['country_destination']
+made_reservation = [0 if x == 'NDF' else 1 for x in destinations]
+train_users_2['made_reservation'] = made_reservation
+
+# Create column for time from first active to first booking
+train_users_2['date_account_created'] = pd.to_datetime(train_users_2['date_account_created'])
+train_users_2['date_first_booking'] = pd.to_datetime(train_users_2['date_first_booking'])
+train_users_2['elapsed_time'] = train_users_2['date_first_booking'] - train_users_2['date_account_created']
 
 
