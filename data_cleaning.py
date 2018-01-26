@@ -8,7 +8,6 @@ test_users = pd.read_csv('/Users/David/Documents/Programming/Springboard/CareerT
 train_users_2 = pd.read_csv('/Users/David/Documents/Programming/Springboard/CareerTrack/Projects/Airbnb/data/train_users_2.csv', index_col = 0, nrows=1000)
 sessions = pd.read_csv('/Users/David/Documents/Programming/Springboard/CareerTrack/Projects/Airbnb/data/sessions.csv', index_col = 0, nrows=5000)
 
-
 # LOAD FUNCTIONS
 def list_of_lists_sums(list_of_lists):
     '''Takes in a list of equal lists and returns single list if values in lists > 0'''
@@ -19,6 +18,16 @@ def list_of_lists_sums(list_of_lists):
 
     return_list = np.sum(list_of_lists, 0)
     return list(return_list)
+
+def create_column_1_0(df, colnamelist):
+    '''Creates a new binary column'''
+    for colname in colnamelist:
+        items = list(df['{}'.format(colname)]) #paste colname in
+        new_items = [x if x == 0 else 1 for x in items] #if value is not zero make it a 1
+        df['{}_0_1'.format(colname)] = new_items
+    
+    return df
+
 
 #ONE HOT #ENCODNING FOR SESSIONS AFTER DROPPING TIME
 # Drop time
@@ -41,7 +50,6 @@ for i in user_ids:
 del sessions_dummies
 # Reset index
 sessions_ohe.set_index('id', inplace=True)
-
 
 #MIN MAX MEAN SESSION TIME 
 times = pd.DataFrame(sessions['secs_elapsed'])
@@ -78,6 +86,21 @@ devices = [list(sessions_clnd['device_type_Android Phone']),
 	list(sessions_clnd['device_type_iPhone'])]
 
 sessions_clnd['devices_total'] = list_of_lists_sums(devices)
+
 del devices
 
-# Create binary columns if a requast was sent
+# Create binary columns if a action/request/device is not 0
+colnames_to_convert = list(sessions_clnd)[6:156]  
+sessions_clnd = create_column_1_0(sessions_clnd, colnames_to_convert)
+
+
+# CLEAN COLUMN NAMES
+# replac spaces with _ in colnames
+sessions_clnd.columns = sessions_clnd.columns.str.lower().str.replace(' ', '_')
+ 
+# Reoder colnames ABC
+sessions_clnd = sessions_clnd.reindex_axis(sorted(sessions_clnd.columns), axis=1)
+
+
+
+
