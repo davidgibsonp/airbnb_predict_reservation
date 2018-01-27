@@ -4,8 +4,10 @@ import numpy as np
 
 # Set start timer
 s = strftime("%H:%M:%S", gmtime())
+print(s)
 
 # LOAD FILES
+print('1/8 Load session data')
 # countries = pd.read_csv('/Users/David/Documents/Programming/Springboard/CareerTrack/Projects/Airbnb/data/countries.csv')
 # age_gender_bkts = pd.read_csv('/Users/David/Documents/Programming/Springboard/CareerTrack/Projects/Airbnb/data/age_gender_bkts.csv')
 #sessions_og = pd.read_csv('/Users/David/Documents/Programming/Springboard/CareerTrack/Projects/Airbnb/data/sessions.csv', index_col = 0)
@@ -41,7 +43,7 @@ ids = [ids[i:i+100] for i in range(0, len(ids), 100)] #makes id a lis
 
 full_df = pd.DataFrame()
 ticker = 0
-print('1/7 One hot encoding loop')
+print('2/8 One hot encoding loop')
 for i in ids: 
     print('{}/{}'.format(ticker, total_iterations))
     ticker += 1 
@@ -101,7 +103,7 @@ for i in ids:
     
     full_df = full_df.append(sessions_clnd)
     
-print('2/7 End of OHE')
+print('3/8 End of OHE')
 # CREATE ADDTIONAL VARIBLES IN SESSION DATA 
 # Create column with the number of login devices BETTER WAY??
 devices = [list(full_df['device_type_Android Phone']),
@@ -122,10 +124,8 @@ full_df.columns = full_df.columns.str.lower().str.replace(' ', '_')
 full_df = full_df.reindex_axis(sorted(full_df.columns), axis=1)
 
 # Export full_df to csv
-print('3/7 Exporting full_df')
+print('4/8 Exporting full_df')
 full_df.to_csv('/Users/David/Documents/Programming/Springboard/CareerTrack/Projects/Airbnb/data/sessions_clnd.csv')
-
-
 
 
 # CLEAN TRAIN USERS
@@ -142,18 +142,18 @@ train_users_2['date_first_booking'] = pd.to_datetime(train_users_2['date_first_b
 train_users_2['elapsed_time'] = train_users_2['date_first_booking'] - train_users_2['date_account_created']
 
 # JOING SESSION DATA WITH USER DATA
-print('4/7 Joining tain on full_df')
+print('5/8 Joining tain on full_df')
 test_users = pd.read_csv('/Users/David/Documents/Programming/Springboard/CareerTrack/Projects/Airbnb/data/test_users.csv', index_col = 0)
 train = train_users_2.join(full_df)
-print('5/7 Joining test on full_df')
+print('6/8 Joining test on full_df')
 test = test_users.join(full_df)
 
-print('6/7 Writing train data')
+print('7/8 Writing train data')
 train.to_csv('/Users/David/Documents/Programming/Springboard/CareerTrack/Projects/Airbnb/data/train.csv')
-print('7/7 Writing test data')
+print('8/8 Writing test data')
 test.to_csv('/Users/David/Documents/Programming/Springboard/CareerTrack/Projects/Airbnb/data/test.csv')
 
-# Set end time
+# Set end time and calc elapsed time 
 e = strftime("%H:%M:%S", gmtime())
 print('Start time: {}'.format(s))
 print('End time: {}'.format(e))
