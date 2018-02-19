@@ -59,8 +59,8 @@ for chunk in pd.read_csv('/Users/David/Documents/Programming/Springboard/CareerT
     chunk_ohe.set_index('id', inplace=True)
 
     # Create binary columns if a action/request/device is not 0
-    colnames_to_convert = list(chunk_ohe)[6:156]  
-    chunk_ohe = create_column_1_0(chunk_ohe, colnames_to_convert)    
+    colnames_to_convert = list(chunk_ohe)[6:156]
+    chunk_ohe = create_column_1_0(chunk_ohe, colnames_to_convert)
     del colnames_to_convert
 
     # Write to apropriate chunk
@@ -107,6 +107,7 @@ print('Relaod Session Data and Calculate Session Time Info, ~34 min')
 print(strftime("%H:%M:%S", gmtime()))
 ticker = 0
 ch_ticker = 0
+
 for chunk in pd.read_csv('/Users/David/Documents/Programming/Springboard/CareerTrack/Projects/Airbnb/data/Original/sessions.csv',chunksize=100000, index_col = 0):
  print('{}/106'.format(ch_ticker))
  times = pd.DataFrame(chunk['secs_elapsed'])
@@ -204,7 +205,7 @@ full_session = pd.read_csv('/Users/David/Documents/Programming/Springboard/Caree
 full_session.set_index('id', inplace=True)
 
 train = pd.merge(train_users_2, full_session, left_index = True, right_index=True)
-test = pd.merge(train_users_2, full_session, left_index = True, right_index=True)
+test = pd.merge(test_users, full_session, left_index = True, right_index=True)
 
 train.to_csv('/Users/David/Documents/Programming/Springboard/CareerTrack/Projects/Airbnb/data/train.csv')
 test.to_csv('/Users/David/Documents/Programming/Springboard/CareerTrack/Projects/Airbnb/data/test.csv')
